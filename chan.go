@@ -34,8 +34,10 @@ func init() {
 	functions.HTTP("LineWebhook", makeLineWebhook(channelSecret, bot, messageHandler))
 }
 
+type MessageHandlerFunc func(ctx context.Context, message webhook.TextMessageContent) error
+
 // makeLineWebhook is an HTTP Cloud Function.
-func makeLineWebhook(channelSecret string, bot *messaging_api.MessagingApiAPI, messageHandler func(ctx context.Context, message webhook.TextMessageContent) error) func(w http.ResponseWriter, r *http.Request) {
+func makeLineWebhook(channelSecret string, bot *messaging_api.MessagingApiAPI, messageHandler MessageHandlerFunc) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 		cb, err := webhook.ParseRequest(channelSecret, r)
@@ -69,10 +71,12 @@ func makeLineWebhook(channelSecret string, bot *messaging_api.MessagingApiAPI, m
 							},
 						); err != nil {
 							log.Print(err)
+							return
 						}
 					}
 					if err := messageHandler(ctx, message); err != nil {
 						log.Print(err)
+						return
 					}
 					if _, err = bot.ReplyMessage(
 						&messaging_api.ReplyMessageRequest{
@@ -85,6 +89,7 @@ func makeLineWebhook(channelSecret string, bot *messaging_api.MessagingApiAPI, m
 						},
 					); err != nil {
 						log.Print(err)
+						return
 					} else {
 						log.Println("Sent text reply.")
 					}
@@ -114,7 +119,7 @@ func makeLineWebhook(channelSecret string, bot *messaging_api.MessagingApiAPI, m
 	}
 }
 
-func makeMessageHandler(client *notionapi.Client, databaseID string) func(ctx context.Context, message webhook.TextMessageContent) error {
+func makeMessageHandler(client *notionapi.Client, databaseID string) MessageHandlerFunc {
 	return func(ctx context.Context, message webhook.TextMessageContent) error {
 		// Verify the message is a valid URL
 		u, err := url.Parse(message.Text)
