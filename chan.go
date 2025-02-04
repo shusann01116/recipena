@@ -59,7 +59,7 @@ func makeLineWebhook(channelSecret string, bot *messaging_api.MessagingApiAPI, m
 			case webhook.MessageEvent:
 				switch message := e.Message.(type) {
 				case webhook.TextMessageContent:
-					if _, err := url.Parse(message.Text); err != nil {
+					if _, err := url.ParseRequestURI(message.Text); err != nil {
 						if _, err = bot.ReplyMessage(
 							&messaging_api.ReplyMessageRequest{
 								ReplyToken: e.ReplyToken,
@@ -122,7 +122,7 @@ func makeLineWebhook(channelSecret string, bot *messaging_api.MessagingApiAPI, m
 func makeMessageHandler(client *notionapi.Client, databaseID string) MessageHandlerFunc {
 	return func(ctx context.Context, message webhook.TextMessageContent) error {
 		// Verify the message is a valid URL
-		u, err := url.Parse(message.Text)
+		u, err := url.ParseRequestURI(message.Text)
 		if err != nil {
 			return err
 		}
