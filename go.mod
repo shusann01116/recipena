@@ -5,7 +5,7 @@ go 1.23.3
 require (
 	github.com/GoogleCloudPlatform/functions-framework-go v1.9.1
 	github.com/jomei/notionapi v1.13.3
-	github.com/line/line-bot-sdk-go/v8 v8.12.0
+	github.com/line/line-bot-sdk-go/v8 v8.12.1
 	golang.org/x/net v0.37.0
 )
 
