@@ -6,7 +6,7 @@ require (
 	github.com/GoogleCloudPlatform/functions-framework-go v1.9.2
 	github.com/jomei/notionapi v1.13.3
 	github.com/line/line-bot-sdk-go/v8 v8.12.1
-	golang.org/x/net v0.38.0
+	golang.org/x/net v0.39.0
 )
 
 require (
