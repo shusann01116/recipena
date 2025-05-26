@@ -1,0 +1,28 @@
+[package]
+name = "recipena"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = { workspace = true }
+async-trait = { workspace = true }
+axum = { workspace = true }
+base64 = { workspace = true }
+config = { workspace = true }
+hmac = { workspace = true }
+http.workspace = true
+http-body-util = { workspace = true }
+reqwest = { workspace = true }
+serde = { workspace = true }
+serde_derive = { workspace = true }
+serde_json = { workspace = true }
+sha2 = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+tracing-stackdriver = { workspace = true }
+tracing-subscriber = { workspace = true }
+line-api-webhook = { path = "../line-api/webhook" }
+
+[dev-dependencies]
+test-case = { workspace = true }
