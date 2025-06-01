@@ -5,6 +5,7 @@ use serde::Deserialize;
 #[derive(Clone, Debug, Deserialize)]
 pub struct AppConfig {
     pub debug: bool,
+    pub line_channel_access_token: String,
     pub line_channel_secret: String,
     pub notion_integration_token: String,
     pub port: u16,

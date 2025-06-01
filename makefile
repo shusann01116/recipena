@@ -6,5 +6,8 @@ gen.api.webhook:
 		--additional-properties=packageName=line-api-webhook \
 		-o /local/go/line-api/webhook
 
+build-image:
+	docker build -t recipena .
+
 deploy:
 	gcloud run deploy recipena --source .

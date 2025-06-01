@@ -1,5 +1,5 @@
 use anyhow::{Ok, Result};
-use recipena::HttpServer;
+use recipena::{HttpServer, Server};
 
 #[tokio::main]
 async fn main() -> Result<()> {

@@ -1,4 +1,4 @@
-use crate::prelude::*;
+use crate::{libs::axum::server::AppState, prelude::*};
 use std::sync::Arc;
 
 use axum::{
@@ -12,27 +12,31 @@ use hmac::{Hmac, Mac};
 use http::StatusCode;
 use sha2::Sha256;
 
-use crate::{axum::util::inspect_body, config::AppConfig};
+use crate::libs::axum::util::inspect_body;
 
 const LINE_SIGNATURE_HEADER: &str = "x-line-signature";
 
 pub(crate) async fn verify_line_signature(
-    State(config): State<Arc<AppConfig>>,
+    State(state): State<Arc<AppState>>,
     headers: HeaderMap,
     request: Request,
     next: Next,
 ) -> std::result::Result<impl IntoResponse, Response> {
     let signature = get_line_signature(&headers).ok_or(StatusCode::UNAUTHORIZED.into_response())?;
     let request = inspect_body(request, |body| {
-        verify_line_signature_inner(signature.as_bytes(), &body, &config.line_channel_secret)
-            .map_err(|e| {
-                tracing::trace!("failed to verify line signature: {:?}", e);
-                (
-                    StatusCode::UNAUTHORIZED,
-                    format!("failed to verify line signature: {}", e),
-                )
-                    .into_response()
-            })
+        verify_line_signature_inner(
+            signature.as_bytes(),
+            &body,
+            &state.config.line_channel_secret,
+        )
+        .map_err(|e| {
+            tracing::trace!("failed to verify line signature: {:?}", e);
+            (
+                StatusCode::UNAUTHORIZED,
+                format!("failed to verify line signature: {}", e),
+            )
+                .into_response()
+        })
     })
     .await
     .map_err(|e| {

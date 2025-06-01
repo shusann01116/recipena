@@ -1,12 +1,12 @@
+pub mod app;
 pub mod config;
+pub mod domain;
+pub mod infra;
+pub mod libs;
 pub mod logger;
 pub mod prelude;
-pub mod server;
 
-pub use server::HttpServer;
+pub use infra::server::Server;
+pub use libs::axum::server::HttpServer;
 
-pub(crate) mod axum;
 pub(crate) mod error;
-pub(crate) mod line;
-pub(crate) mod port;
-pub(crate) mod service;
