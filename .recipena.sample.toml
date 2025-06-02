@@ -1,0 +1,6 @@
+debug = true
+line_channel_access_token = ""
+line_channel_secret = ""
+notion_integration_token = ""
+notion_database_id = ""
+port = 8080
