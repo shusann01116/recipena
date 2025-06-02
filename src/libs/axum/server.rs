@@ -16,9 +16,16 @@ use tokio::{
 
 use crate::{
     Server,
-    app::echo::{EchoRequest, EchoService},
+    app::{
+        echo::{EchoRequest, EchoService},
+        recipe::{InsertRecipeRequest, RecipeService},
+    },
     config::AppConfig,
-    libs::line::client::LineClientImpl,
+    libs::{
+        line::client::LineClientImpl,
+        notion::{client::NotionClient, recipe::RecipeRepositoryImpl},
+        reqwest::ReqwestClient,
+    },
     prelude::*,
 };
 
@@ -32,14 +39,24 @@ pub struct HttpServer {
 pub struct AppState {
     pub config: AppConfig,
     echo_service: EchoService,
+    recipe_service: RecipeService,
 }
 
 impl HttpServer {
     pub fn new(config: AppConfig) -> impl Server {
         let line_client = LineClientImpl::new(config.line_channel_access_token.clone());
+        let notion_client =
+            NotionClient::from_api_key(config.notion_integration_token.clone()).unwrap();
+        let recipe_repository =
+            RecipeRepositoryImpl::new(Arc::new(notion_client), config.notion_database_id.clone());
+
         let app_state = Arc::new(AppState {
             config,
             echo_service: EchoService::new(Arc::new(line_client)),
+            recipe_service: RecipeService::new(
+                Arc::new(recipe_repository),
+                Arc::new(ReqwestClient::default()),
+            ),
         });
         Self { app_state }
     }
@@ -54,7 +71,10 @@ impl HttpServer {
 
         for e in request.events.iter() {
             let e = e.clone();
+
             let echo_service = state.echo_service.clone();
+            let recipe_service = state.recipe_service.clone();
+
             let handle: JoinHandle<Result<()>> = task::spawn(async move {
                 match e {
                     line_webhook::models::Event::MessageEvent(message_event) => {
@@ -62,9 +82,15 @@ impl HttpServer {
                             .ok_or(anyhow::anyhow!("failed to extract message"))?;
                         let echo_request = EchoRequest {
                             reply_token,
-                            message,
+                            message: message.clone(),
                         };
                         echo_service.echo(echo_request).await?;
+
+                        let recipe_request = InsertRecipeRequest {
+                            recipe_url: message.clone(),
+                        };
+                        recipe_service.insert_recipe(recipe_request).await?;
+
                         Ok(())
                     }
                     _ => Ok(()),
@@ -93,12 +119,12 @@ impl crate::infra::server::Server for HttpServer {
     async fn run(&self) -> Result<()> {
         let listener = TcpListener::bind(format!("0.0.0.0:{}", self.app_state.config.port))
             .await
-            .with_context(|| format!("Failed to bind to port {}", self.app_state.config.port))?;
+            .with_context(|| format!("failed to bind to port {}", self.app_state.config.port))?;
         tracing::info!(
-            "Listening on {}",
+            "listening on {}",
             listener
                 .local_addr()
-                .with_context(|| "failed to get local address")?
+                .with_context(|| "failed to bind local address")?
         );
 
         let app = Router::new()
@@ -116,7 +142,7 @@ impl crate::infra::server::Server for HttpServer {
 
 impl IntoResponse for Error {
     fn into_response(self) -> Response {
-        tracing::error!(%self, "error");
+        tracing::error!(%self, "failed to handle request");
         (StatusCode::INTERNAL_SERVER_ERROR, "something went wrong").into_response()
     }
 }

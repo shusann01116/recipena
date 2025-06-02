@@ -31,3 +31,29 @@ impl EchoService {
         Ok(())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::infra::line::MockLineClient;
+
+    use super::*;
+
+    #[tokio::test]
+    async fn test_echo() {
+        let mut line_client = MockLineClient::new();
+        line_client
+            .expect_reply_messages()
+            .once()
+            .returning(|_, _| Ok(()));
+
+        let echo_service = EchoService::new(Arc::new(line_client));
+
+        let request = EchoRequest {
+            reply_token: "reply_token".to_string(),
+            message: "message".to_string(),
+        };
+
+        let result = echo_service.echo(request).await;
+        assert!(result.is_ok());
+    }
+}

@@ -6,6 +6,7 @@ pub enum LineMessage {
     Text(String),
 }
 
+#[cfg_attr(test, automock)]
 #[async_trait]
 pub trait LineClient {
     async fn reply_messages(&self, token: &str, message: Vec<LineMessage>) -> Result<()>;

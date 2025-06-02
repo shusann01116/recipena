@@ -8,6 +8,7 @@ pub struct AppConfig {
     pub line_channel_access_token: String,
     pub line_channel_secret: String,
     pub notion_integration_token: String,
+    pub notion_database_id: String,
     pub port: u16,
 }
 
