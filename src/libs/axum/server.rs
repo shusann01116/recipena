@@ -8,7 +8,7 @@ use axum::{
     response::{IntoResponse, Response},
 };
 use http::StatusCode;
-use line_bot_sdk_rust::line_webhook::{self, models::CallbackRequest};
+use line_bot_sdk_rust::line_webhook::models::CallbackRequest;
 use tokio::{
     net::TcpListener,
     task::{self, JoinHandle},
@@ -16,11 +16,7 @@ use tokio::{
 use tower_http::trace::TraceLayer;
 
 use crate::{
-    Server,
-    app::{
-        echo::{EchoRequest, EchoService},
-        recipe::{InsertRecipeRequest, RecipeService},
-    },
+    app::{echo::EchoService, recipe::RecipeService},
     config::AppConfig,
     infra::handler::handle_event,
     libs::{
@@ -45,7 +41,7 @@ pub struct AppState {
 }
 
 impl HttpServer {
-    pub fn new(config: AppConfig) -> impl Server {
+    pub fn new(config: AppConfig) -> Self {
         let line_client = LineClientImpl::new(config.line_channel_access_token.clone());
         let notion_client =
             NotionClient::from_api_key(config.notion_integration_token.clone()).unwrap();

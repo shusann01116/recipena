@@ -22,6 +22,6 @@ pub fn init_logger(config: &AppConfig) -> Result<()> {
         .with(fmt_layer);
 
     tracing::subscriber::set_global_default(subscriber)
-        .with_context(|| format!("Failed to set global default logger"))?;
+        .with_context(|| "Failed to set global default logger")?;
     Ok(())
 }

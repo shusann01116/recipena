@@ -27,7 +27,7 @@ impl ReqwestClient {
             .and_then(|mut m| m.next())
             .with_context(|| format!("no node found for selector: {}", selector))?;
         Ok(handle
-            .get(&dom.parser())
+            .get(dom.parser())
             .with_context(|| format!("no node found for selector: {}", selector))?)
     }
 }
@@ -40,7 +40,7 @@ impl HtmlClient for ReqwestClient {
         let dom = tl::parse(&html, tl::ParserOptions::default())?;
         let node = Self::query_node(&dom, "title")?;
 
-        Ok(node.inner_text(&dom.parser()).to_string())
+        Ok(node.inner_text(dom.parser()).to_string())
     }
 }
 

@@ -26,7 +26,7 @@ pub(crate) async fn verify_line_signature(
     let request = inspect_body(request, |body| {
         verify_line_signature_inner(
             signature.as_bytes(),
-            &body,
+            body,
             &state.config.line_channel_secret,
         )
         .map_err(|e| {
