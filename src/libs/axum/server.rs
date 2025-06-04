@@ -132,6 +132,7 @@ impl crate::infra::server::Server for HttpServer {
                 self.app_state.clone(),
                 verify_line_signature,
             ))
+            .layer(TraceLayer::new_for_http())
             .route("/", axum::routing::post(Self::post_callback))
             .with_state(self.app_state.clone());
 
