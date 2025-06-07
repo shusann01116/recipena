@@ -4,6 +4,12 @@ use anyhow::{Result, Context};
 
 pub struct TabulaExtractor;
 
+impl Default for TabulaExtractor {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl TabulaExtractor {
     pub fn new() -> Self {
         Self
