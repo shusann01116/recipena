@@ -9,4 +9,4 @@ pub use infra::server::Server;
 pub use libs::axum::server::HttpServer;
 
 pub(crate) mod error;
-pub(crate) mod libs;
+pub mod libs;
