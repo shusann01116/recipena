@@ -59,6 +59,6 @@ mod tests {
         "#;
         let dom = tl::parse(body, tl::ParserOptions::default()).unwrap();
         let node = ReqwestClient::query_node(&dom, "title").unwrap();
-        assert_eq!(node.inner_text(&dom.parser()), "Google");
+        assert_eq!(node.inner_text(dom.parser()), "Google");
     }
 }
