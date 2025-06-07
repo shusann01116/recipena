@@ -28,7 +28,7 @@ COPY --from=builder /usr/lib/aarch64-linux-gnu/libssl.so.3 /builder-libs/aarch64
 COPY --from=builder /usr/lib/aarch64-linux-gnu/libcrypto.so.3 /builder-libs/aarch64-linux-gnu/libcrypto.so.3
 
 # Copy and run the SSL library setup script
-COPY copy-ssl-libs.sh /tmp/copy-ssl-libs.sh
+COPY scripts/copy-ssl-libs.sh /tmp/copy-ssl-libs.sh
 RUN chmod +x /tmp/copy-ssl-libs.sh && /tmp/copy-ssl-libs.sh
 
 FROM gcr.io/distroless/java21-debian12

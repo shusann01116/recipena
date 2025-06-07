@@ -30,9 +30,9 @@ jobs:
         
     - name: Create test PDF
       run: |
-        cd test-data
-        python create_test_pdf.py test_table.pdf
-        ls -la test_table.pdf || echo "PDF creation may have failed"
+        mkdir -p test-data
+        python scripts/create_test_pdf.py test-data/test_table.pdf
+        ls -la test-data/test_table.pdf || echo "PDF creation may have failed"
         
     - name: Build Docker image with tabula (test optimized)
       run: |
