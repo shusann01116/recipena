@@ -15,10 +15,11 @@ RUN apt-get update && apt-get install -y \
 
 RUN wget -O /tabula.jar https://github.com/tabulapdf/tabula-java/releases/download/v1.0.5/tabula-1.0.5-jar-with-dependencies.jar
 
-FROM eclipse-temurin:17-jre
+FROM rust:1@sha256:25038aa450210c53cf05dbf7b256e1df1ee650a58bb46cbc7d6fa79c1d98d083
 
-# Install bash and other basic tools for testing
+# Install Java for tabula
 RUN apt-get update && apt-get install -y \
+    openjdk-17-jre \
     bash \
     && rm -rf /var/lib/apt/lists/*
 
