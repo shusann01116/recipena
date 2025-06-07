@@ -12,13 +12,9 @@ FROM eclipse-temurin:17-jre AS downloader
 
 RUN apt-get update && apt-get install -y \
     wget \
-    unzip \
     && rm -rf /var/lib/apt/lists/*
 
-RUN wget -O tabula.zip https://github.com/tabulapdf/tabula/releases/download/v1.2.1/tabula-jar-1.2.1.zip && \
-    unzip tabula.zip && \
-    mv tabula/tabula.jar /tabula.jar && \
-    rm -rf tabula.zip tabula/
+RUN wget -O /tabula.jar https://github.com/tabulapdf/tabula-java/releases/download/v1.0.5/tabula-1.0.5-jar-with-dependencies.jar
 
 # Intermediate stage to handle SSL library copying with shell access
 FROM debian:12-slim AS ssl-copier
