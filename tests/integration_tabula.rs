@@ -22,9 +22,9 @@ fn test_tabula_availability() {
 
 #[test]
 fn test_tabula_extractor_creation() {
-    let extractor = TabulaExtractor::new();
+    let _extractor = TabulaExtractor::new();
     // Verify we can create an instance without panicking
-    assert!(true);
+    // If we reach this point, the test passed
 }
 
 #[test]

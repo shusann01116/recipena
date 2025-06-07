@@ -126,9 +126,9 @@ mod tests {
 
     #[test]
     fn test_tabula_extractor_creation() {
-        let extractor = TabulaExtractor::new();
-        // Test that we can create an instance
-        assert!(true);
+        let _extractor = TabulaExtractor::new();
+        // Test that we can create an instance without panicking
+        // If we reach this point, the test passed
     }
 
     #[test]
