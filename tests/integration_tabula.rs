@@ -1,16 +1,19 @@
 use recipena::libs::tabula::TabulaExtractor;
-use std::path::Path;
 use std::fs;
+use std::path::Path;
 use tempfile::TempDir;
 
 #[test]
 fn test_tabula_availability() {
     // Test that tabula is available in the Docker container environment
     let is_available = TabulaExtractor::is_available();
-    
+
     if std::env::var("CI").is_ok() || std::env::var("DOCKER_ENV").is_ok() {
         // In CI or Docker environment, tabula should be available
-        assert!(is_available, "Tabula should be available in CI/Docker environment");
+        assert!(
+            is_available,
+            "Tabula should be available in CI/Docker environment"
+        );
     } else {
         // Local development - just print status
         println!("Tabula available: {} (local development)", is_available);
@@ -34,10 +37,10 @@ fn test_tabula_extract_simple_pdf() {
     }
 
     let extractor = TabulaExtractor::new();
-    
+
     // Create a simple test PDF path (this would need to be a real PDF in practice)
     let test_pdf_path = Path::new("/tmp/test.pdf");
-    
+
     if !test_pdf_path.exists() {
         println!("Skipping test - test PDF not found at {:?}", test_pdf_path);
         return;
@@ -65,7 +68,7 @@ fn test_tabula_extract_with_pages() {
 
     let extractor = TabulaExtractor::new();
     let test_pdf_path = Path::new("/tmp/test.pdf");
-    
+
     if !test_pdf_path.exists() {
         println!("Skipping test - test PDF not found");
         return;
@@ -74,15 +77,21 @@ fn test_tabula_extract_with_pages() {
     // Test with page specification
     match extractor.extract_tables(test_pdf_path, "CSV", Some("1")) {
         Ok(result) => {
-            println!("Page-specific extraction successful: {} chars", result.len());
+            println!(
+                "Page-specific extraction successful: {} chars",
+                result.len()
+            );
         }
         Err(e) => {
-            println!("Page-specific extraction failed (expected in test env): {}", e);
+            println!(
+                "Page-specific extraction failed (expected in test env): {}",
+                e
+            );
         }
     }
 }
 
-#[test] 
+#[test]
 #[ignore] // Only run in Docker environment
 fn test_tabula_extract_different_formats() {
     if !TabulaExtractor::is_available() {
@@ -92,7 +101,7 @@ fn test_tabula_extract_different_formats() {
 
     let extractor = TabulaExtractor::new();
     let test_pdf_path = Path::new("/tmp/test.pdf");
-    
+
     if !test_pdf_path.exists() {
         println!("Skipping test - test PDF not found");
         return;
@@ -121,7 +130,7 @@ fn test_tabula_extract_to_file() {
 
     let extractor = TabulaExtractor::new();
     let test_pdf_path = Path::new("/tmp/test.pdf");
-    
+
     if !test_pdf_path.exists() {
         println!("Skipping test - test PDF not found");
         return;
@@ -134,9 +143,11 @@ fn test_tabula_extract_to_file() {
     match extractor.extract_to_file(test_pdf_path, &output_path, "CSV", None) {
         Ok(()) => {
             if output_path.exists() {
-                let content = fs::read_to_string(&output_path)
-                    .expect("Failed to read output file");
-                println!("File extraction successful: {} chars written", content.len());
+                let content = fs::read_to_string(&output_path).expect("Failed to read output file");
+                println!(
+                    "File extraction successful: {} chars written",
+                    content.len()
+                );
                 assert!(!content.is_empty(), "Output file should not be empty");
             } else {
                 println!("Output file was not created");
@@ -151,17 +162,19 @@ fn test_tabula_extract_to_file() {
 #[test]
 fn test_tabula_error_handling() {
     let extractor = TabulaExtractor::new();
-    
+
     // Test with non-existent file
     let non_existent_pdf = Path::new("/tmp/non_existent.pdf");
-    
+
     if TabulaExtractor::is_available() {
         match extractor.extract_tables(non_existent_pdf, "CSV", None) {
             Ok(_) => panic!("Should have failed with non-existent file"),
             Err(e) => {
                 println!("Expected error for non-existent file: {}", e);
-                assert!(e.to_string().contains("Failed to execute tabula command") || 
-                       e.to_string().contains("Tabula command failed"));
+                assert!(
+                    e.to_string().contains("Failed to execute tabula command")
+                        || e.to_string().contains("Tabula command failed")
+                );
             }
         }
     } else {
