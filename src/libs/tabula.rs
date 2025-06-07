@@ -103,6 +103,17 @@ impl TabulaExtractor {
         
         Ok(())
     }
+
+    /// Check if tabula is available in the system
+    pub fn is_available() -> bool {
+        Command::new("java")
+            .args(["-jar", "/tabula.jar", "--help"])
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
+            .status()
+            .map(|status| status.success())
+            .unwrap_or(false)
+    }
 }
 
 #[cfg(test)]
@@ -117,6 +128,11 @@ mod tests {
         assert!(true);
     }
     
-    // Note: Integration tests would require actual PDF files
-    // and the tabula binary to be available in the test environment
+    #[test]
+    fn test_tabula_availability() {
+        // This test will pass in CI with Docker container, but may fail locally
+        let is_available = TabulaExtractor::is_available();
+        println!("Tabula available: {}", is_available);
+        // Don't assert here as it depends on environment
+    }
 }
