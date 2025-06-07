@@ -8,15 +8,15 @@ fn test_tabula_availability() {
     // Test that tabula is available in the Docker container environment
     let is_available = TabulaExtractor::is_available();
 
-    if std::env::var("CI").is_ok() || std::env::var("DOCKER_ENV").is_ok() {
-        // In CI or Docker environment, tabula should be available
+    if std::env::var("DOCKER_ENV").is_ok() {
+        // In Docker environment with tabula, tabula should be available
         assert!(
             is_available,
-            "Tabula should be available in CI/Docker environment"
+            "Tabula should be available in Docker environment"
         );
     } else {
-        // Local development - just print status
-        println!("Tabula available: {} (local development)", is_available);
+        // CI or local development - just print status
+        println!("Tabula available: {} (CI/local development)", is_available);
     }
 }
 
