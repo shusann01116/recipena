@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use crate::{
-    app::{echo::EchoRequest, recipe::InsertRecipeRequest},
+    app::{echo::EchoRequest, random_recipe::GetRandomRecipeRequest, recipe::InsertRecipeRequest},
     libs::axum::server::AppState,
     prelude::*,
 };
@@ -14,21 +14,31 @@ pub async fn handle_event(state: Arc<AppState>, e: line_webhook::models::Event) 
             let (reply_token, message) = extract_message(&message_event)
                 .ok_or(anyhow::anyhow!("failed to extract message"))?;
 
-            let recipe_request = InsertRecipeRequest {
-                recipe_url: message.clone(),
-                reply_token: reply_token.clone(),
-            };
+            if message == "今日の気分" {
+                let random_recipe_request = GetRandomRecipeRequest {
+                    reply_token: reply_token.clone(),
+                };
+                state
+                    .random_recipe_service
+                    .get_random_recipe(random_recipe_request)
+                    .await?;
+            } else {
+                let recipe_request = InsertRecipeRequest {
+                    recipe_url: message.clone(),
+                    reply_token: reply_token.clone(),
+                };
 
-            match recipe_request.validate() {
-                Ok(_) => {
-                    state.recipe_service.insert_recipe(recipe_request).await?;
-                }
-                Err(_) => {
-                    let echo_request = EchoRequest {
-                        reply_token,
-                        message: message.clone(),
-                    };
-                    state.echo_service.echo(echo_request).await?;
+                match recipe_request.validate() {
+                    Ok(_) => {
+                        state.recipe_service.insert_recipe(recipe_request).await?;
+                    }
+                    Err(_) => {
+                        let echo_request = EchoRequest {
+                            reply_token,
+                            message: message.clone(),
+                        };
+                        state.echo_service.echo(echo_request).await?;
+                    }
                 }
             }
 

@@ -5,4 +5,5 @@ use async_trait::async_trait;
 #[async_trait]
 pub trait RecipeRepository {
     async fn insert_recipe(&self, recipe: Recipe) -> Result<()>;
+    async fn get_random_recipe(&self) -> Result<Option<Recipe>>;
 }
