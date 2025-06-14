@@ -16,7 +16,7 @@ use tokio::{
 use tower_http::trace::TraceLayer;
 
 use crate::{
-    app::{echo::EchoService, recipe::RecipeService},
+    app::{echo::EchoService, random_recipe::RandomRecipeService, recipe::RecipeService},
     config::AppConfig,
     infra::handler::handle_event,
     libs::{
@@ -38,6 +38,7 @@ pub struct AppState {
     pub config: AppConfig,
     pub echo_service: EchoService,
     pub recipe_service: RecipeService,
+    pub random_recipe_service: std::sync::Arc<dyn RandomRecipeService + Send + Sync>,
 }
 
 impl HttpServer {
@@ -52,9 +53,15 @@ impl HttpServer {
             config,
             echo_service: EchoService::new(Arc::new(line_client.clone())),
             recipe_service: RecipeService::new(
-                Arc::new(recipe_repository),
+                Arc::new(recipe_repository.clone()),
                 Arc::new(line_client.clone()),
                 Arc::new(ReqwestClient::default()),
+            ),
+            random_recipe_service: Arc::new(
+                crate::app::random_recipe::RandomRecipeServiceImpl::new(
+                    recipe_repository.clone(),
+                    Arc::new(line_client) as Arc<dyn crate::infra::line::LineClient + Send + Sync>,
+                ),
             ),
         });
         Self { app_state }
