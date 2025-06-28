@@ -33,7 +33,7 @@ pub(crate) async fn verify_line_signature(
             tracing::trace!("failed to verify line signature: {:?}", e);
             (
                 StatusCode::UNAUTHORIZED,
-                format!("failed to verify line signature: {}", e),
+                format!("failed to verify line signature: {e}"),
             )
                 .into_response()
         })

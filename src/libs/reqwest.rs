@@ -25,10 +25,10 @@ impl ReqwestClient {
         let handle = dom
             .query_selector(selector)
             .and_then(|mut m| m.next())
-            .with_context(|| format!("no node found for selector: {}", selector))?;
+            .with_context(|| format!("no node found for selector: {selector}"))?;
         Ok(handle
             .get(dom.parser())
-            .with_context(|| format!("no node found for selector: {}", selector))?)
+            .with_context(|| format!("no node found for selector: {selector}"))?)
     }
 }
 

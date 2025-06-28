@@ -18,7 +18,7 @@ pub async fn inspect_body(
         .map_err(|err| {
             (
                 StatusCode::INTERNAL_SERVER_ERROR,
-                format!("failed to collect body: {}", err),
+                format!("failed to collect body: {err}"),
             )
                 .into_response()
         })?
