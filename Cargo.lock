@@ -464,7 +464,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cea14ef9355e3beab063703aa9dab15afd25f0667c341310c1e5274bb1d0da18"
 dependencies = [
  "libc",
- "windows-sys 0.52.0",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
@@ -1412,9 +1412,9 @@ dependencies = [
 
 [[package]]
 name = "notion-client"
-version = "1.0.10"
+version = "1.0.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e95260696127797c60a73eacab3c9345d7a06b946bf4b96c9fe97996ff69c740"
+checksum = "3231c57108613062b938bb06f81c2ffa62627b2e4abff467863a7ef65e082e96"
 dependencies = [
  "chrono",
  "derive_builder",
@@ -1931,7 +1931,7 @@ dependencies = [
  "errno",
  "libc",
  "linux-raw-sys",
- "windows-sys 0.52.0",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
@@ -2397,7 +2397,7 @@ dependencies = [
  "getrandom 0.3.3",
  "once_cell",
  "rustix",
- "windows-sys 0.52.0",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
