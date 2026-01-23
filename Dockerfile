@@ -1,4 +1,4 @@
-FROM rust:1@sha256:f58923369ba295ae1f60bc49d03f2c955a5c93a0b7d49acfb2b2a65bebaf350d AS builder
+FROM rust:1@sha256:5474dce321a62be62d86355e776a035587345eb385e049760cfb6b04b6fa9025 AS builder
 
 WORKDIR /app
 COPY . /app
