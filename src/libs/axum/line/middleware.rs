@@ -8,7 +8,7 @@ use axum::{
     response::{IntoResponse, Response},
 };
 use base64::{Engine, engine};
-use hmac::{Hmac, Mac};
+use hmac::{Hmac, KeyInit, Mac};
 use http::StatusCode;
 use sha2::Sha256;
 
