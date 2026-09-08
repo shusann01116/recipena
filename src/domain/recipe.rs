@@ -8,7 +8,7 @@ pub struct Recipe {
 impl Recipe {
     pub fn new(name: String, recipe_url: url::Url) -> Self {
         Self {
-            id: ulid::Ulid::new(),
+            id: ulid::Ulid::generate(),
             name,
             recipe_url,
         }
